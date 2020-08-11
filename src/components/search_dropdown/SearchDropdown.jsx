@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import classes from './SearchDropdown.module.scss';
 import { dropDownArrow, dropUpArrow } from '../../assets';
 
-const SearchDropdown = ({ title, values }) => {
+const SearchDropdown = ({ title, values, filterValuesById }) => {
     const [listOpen, setListOpen] = useState(false);
 
-    const onListItemClick = () => {
+    const onListItemClick = (id) => {
         setListOpen(false);
+        filterValuesById(id);
     }
 
     return (
@@ -22,8 +23,8 @@ const SearchDropdown = ({ title, values }) => {
             </div>
             {listOpen &&
                 <div className={classes.dropdownList}>
-                    {values.map((value, index) => (
-                        <div className={classes.listItem} key={index} onClick={onListItemClick}>{value}</div>
+                    {values.map(value => (
+                        <div className={classes.listItem} key={value.id} onClick={() => onListItemClick(value.id)}>{value.title}</div>
                     ))}
                 </div>
             }
@@ -35,7 +36,7 @@ const SearchDropdown = ({ title, values }) => {
 SearchDropdown.propTypes = {
     title: PropTypes.string.isRequired,
     values: PropTypes.array.isRequired,
-    onClickHandler: PropTypes.func
+    filterValuesById: PropTypes.func
 };
 
 

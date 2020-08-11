@@ -1,20 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import classes from './MonthCampaigns.module.scss';
-import { campaignsURL } from '../../../utils/constants';
 import { CampaignAd } from '../../../components';
+import PropTypes from 'prop-types';
 
-const MonthCampaigns = () => {
-    const [campaigns, setCampaigns] = useState([]);
-
-    useEffect(() => {
-        const fetchCampaigns = async () => {
-          const resp = await fetch(campaignsURL);
-          const campaigns = await resp.json();
-          setCampaigns(campaigns?.data);
-        };
-        fetchCampaigns();
-      }, []);
-
+const MonthCampaigns = ({ campaigns }) => {
+    
     return (
         <div className={classes.container}>
             <div className={classes.title}>This month campaign</div>
@@ -25,5 +15,8 @@ const MonthCampaigns = () => {
     );
 };
 
+MonthCampaigns.propTypes = { 
+    campaigns: PropTypes.array.isRequired
+}
 
 export default MonthCampaigns;

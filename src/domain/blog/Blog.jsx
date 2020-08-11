@@ -6,24 +6,42 @@ import BlogSearchControls from './components/BlogSearchControls';
 import { blogsURL } from '../../utils/constants';
 import { useBreakpoint } from '../../utils/breakpoint';
 import { MonthCampaigns } from './components';
+import { campaignsURL } from '../../utils/constants';
 
 const Blog = () => {
     const [blogs, setBlogs] = useState([]);
+    const [filteredBlogs, setFilteredBlogs] = useState([]);
+    const [campaigns, setCampaigns] = useState([]);
+
     const breakpoints = useBreakpoint();
     const smallDevice = !!breakpoints.sm;
+
+    useEffect(() => {
+        const fetchCampaigns = async () => {
+          const resp = await fetch(campaignsURL);
+          const campaigns = await resp.json();
+          setCampaigns(campaigns?.data);
+        };
+        fetchCampaigns();
+      }, []);
 
     useEffect(() => {
         const fetchBlogs = async () => {
             const resp = await fetch(blogsURL);
             const blogs = await resp.json();
             setBlogs(blogs?.data ? blogs.data : blogs);
+            setFilteredBlogs(blogs?.data ? blogs.data : blogs)
         }
 
         fetchBlogs();
     }, []);
 
+    const filterBlogs = (filterBlogs) => {
+        setFilteredBlogs(filterBlogs);
+    }
+
     const BlogPosters = () => {
-        const blogItems = [...blogs];
+        const blogItems = [...filteredBlogs];
         // grab the first blog as the highlighted blog
         // No highlighted blog on small device screens
         const blogHighlighted = smallDevice ? null : blogItems.shift();
@@ -56,13 +74,17 @@ const Blog = () => {
             <div className={classes.content}>
                 <div className={classes.blogs}>
                     <div className={classes.searchContainer}>
-                        <BlogSearchControls />
+                        <BlogSearchControls 
+                            blogs={blogs} 
+                            filterBlogs={filterBlogs}
+                            campaigns={campaigns}
+                        />
                     </div>
                     <BlogPosters />
                 </div>
                 <div className={classes.blogAds}>
                     <AppDownloadSquare />
-                    <MonthCampaigns />
+                    <MonthCampaigns campaigns={campaigns} />
                 </div>
             </div>
         </div>
