@@ -12,9 +12,14 @@ const BlogSearchControls = ({ campaigns, blogs, filterBlogs }) => {
         };
     });
 
-    const filterBlogsByCampaign = (campaignId) => {
-        const newFilteredBlogs = blogs.filter(blog => blog.campaign_id === campaignId);
-        filterBlogs(newFilteredBlogs);
+    const filterBlogsByCampaign = (campaignIds) => {
+        // If campaignIds is empty, show all blogs
+        if(campaignIds && campaignIds.length) {
+            const newFilteredBlogs = blogs.filter(blog => campaignIds.includes(blog.campaign_id));
+            filterBlogs(newFilteredBlogs);
+        } else {
+            filterBlogs(blogs);
+        }
     }
 
     return (
